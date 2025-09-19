@@ -1,3 +1,6 @@
+import { inject } from "@vercel/analytics"
+
+
 // ================== Utilities ==================
 const $  = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
