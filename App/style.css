@@ -73,7 +73,7 @@ main{
     margin-inline: auto;
     padding: 18px;
     display: grid;
-    grid-template-columns: 280px 1fr 360px;
+    grid-template-columns: 280px 1fr 480px;
     gap: var(--gap);
 }
 
@@ -226,7 +226,7 @@ iframe.preview{
     border:1px solid rgba(255,255,255,.12); 
     border-radius:12px; 
     padding:10px; 
-    min-height:160px; 
+    min-height:400px; 
     overflow:auto; 
     white-space:pre-wrap
 }

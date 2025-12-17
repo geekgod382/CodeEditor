@@ -57,12 +57,20 @@
                     <button class="tab active" role="tab" aria-selected="true" tabindex="0" data-pane="html">HTML</button>
                     <button class="tab" role="tab" aria-selected="false" tabindex="-1" data-pane="css">CSS</button>
                     <button class="tab" role="tab" aria-selected="false" tabindex="-1" data-pane="js">JavaScript</button>
+                    <button class="tab" role="tab" aria-selected="false" tabindex="-1" data-pane="py">Python</button>
+                    <button class="tab" role="tab" aria-selected="false" tabindex="-1" data-pane="c">C</button>
+                    <button class="tab" role="tab" aria-selected="false" tabindex="-1" data-pane="cpp">C++</button>
+                    <button class="tab" role="tab" aria-selected="false" tabindex="-1" data-pane="java">Java</button>
                 </div>
 
                 <!-- Link each editor to a clear panel name -->
                 <div class="editor-wrap" data-pane="html"><div id="ed_html" class="editor"></div></div>
                 <div class="editor-wrap" data-pane="css" hidden><div id="ed_css" class="editor"></div></div>
                 <div class="editor-wrap" data-pane="js" hidden><div id="ed_js" class="editor"></div></div>
+                <div class="editor-wrap" data-pane="py" hidden><div id="ed_py" class="editor"></div></div>
+                <div class="editor-wrap" data-pane="c" hidden><div id="ed_c" class="editor"></div></div>
+                <div class="editor-wrap" data-pane="cpp" hidden><div id="ed_cpp" class="editor"></div></div>
+                <div class="editor-wrap" data-pane="java" hidden><div id="ed_java" class="editor"></div></div>
 
                 <div class="stack">
                     <h3>Preview</h3>
@@ -96,6 +104,8 @@
         referrerpolicy="no-referrer"
         onerror="(function(){var s=document.createElement('script'); s.src='https://cdn.jsdelivr.net/npm/ace-builds@1.43.2/src-min/ace.js'; document.head.appendChild(s);}())">
     </script>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>
+
     
 
     <script src="script.js"></script>

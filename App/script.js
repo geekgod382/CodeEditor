@@ -47,11 +47,15 @@ function makeEditor(id, mode){
 const ed_html = makeEditor('ed_html','ace/mode/html');
 const ed_css = makeEditor('ed_css','ace/mode/css');
 const ed_js = makeEditor('ed_js','ace/mode/javascript');
+const ed_py = makeEditor('ed_py','ace/mode/python');
+const ed_c = makeEditor('ed_c','ace/mode/c_cpp');
+const ed_cpp = makeEditor('ed_cpp','ace/mode/c_cpp');
+const ed_java = makeEditor('ed_java','ace/mode/java');
 
 // ================== Tabs (robust + a11y) ==================
-const TAB_ORDER = ['html','css','js'];
+const TAB_ORDER = ['html','css','js','py','c','cpp','java'];
 const wraps   = Object.fromEntries($$('#webEditors .editor-wrap').map(w => [w.dataset.pane, w]));
-const editors = { html: ed_html, css: ed_css, js: ed_js };
+const editors = { html: ed_html, css: ed_css, js: ed_js, py: ed_py, c: ed_c, cpp: ed_cpp, java: ed_java };
 
 function activePane(){
     const t = $('#webTabs .tab.active');
@@ -119,7 +123,61 @@ function runWeb(withTests=false){
     log(withTests ? 'Run with tests.' : 'Web preview updated.');
 }
 
-$('#runWeb')?.addEventListener('click', ()=>runWeb(false));
+async function runBackend(lang) {
+    const code = editors[lang].getValue();
+
+    log(`Running ${lang} code...`);
+
+    const res = await fetch("https://coderunnerbackend-fmsf.onrender.com/run", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ language: lang, code })
+    });
+
+    const data = await res.json();
+    log(data.output || data.error || "No output");
+}
+
+
+let pyodide;
+
+async function initPy() {
+    pyodide = await loadPyodide();
+    log("Python ready (Pyodide)");
+}
+initPy();
+
+async function runPython() {
+    try {
+        const code = ed_py.getValue();
+
+        // Execute the user's code while capturing stdout/stderr into a buffer
+        // so prints are returned to JS. Avoid using the name `out` which
+        // conflicts with the DOM `out` variable above.
+        const wrapped = `import sys, io, traceback\n_buf = io.StringIO()\n_old_out = sys.stdout\n_old_err = sys.stderr\nsys.stdout = _buf\nsys.stderr = _buf\ntry:\n${code.split('\n').map(l => '    ' + l).join('\n')}\nexcept Exception:\n    traceback.print_exc()\nfinally:\n    sys.stdout = _old_out\n    sys.stderr = _old_err\n_buf.getvalue()`;
+
+        const result = await pyodide.runPythonAsync(wrapped);
+        if (result && String(result).trim()) log(String(result));
+        else log("Done");
+    } catch (e) {
+        log(e.toString(), 'error');
+    }
+}
+
+runBackend("c")
+runBackend("cpp")
+runBackend("java")
+
+$('#runWeb')?.addEventListener('click', ()=>{
+    const pane = activePane();
+    if (pane === 'html' || pane === 'css' || pane === 'js')
+        runWeb(false);
+    else if (pane === 'py')
+        runPython(); // pyodide
+    else
+        runBackend(pane); // c / cpp / java
+});
+
 $('#runTests')?.addEventListener('click', ()=>runWeb(true));
 
 $('#openPreview')?.addEventListener('click', ()=>{
@@ -137,7 +195,11 @@ function projectJSON(){
         test: $('#testArea')?.value || '',
         html: ed_html.getValue(),
         css: ed_css.getValue(),
-        js: ed_js.getValue()
+        js: ed_js.getValue(),
+        py: ed_py.getValue(),
+        c: ed_c.getValue(),
+        cpp: ed_cpp.getValue(),
+        java: ed_java.getValue()
     };
 }
 
@@ -148,6 +210,10 @@ function loadProject(obj){
         ed_html.setValue(obj.html || '', -1);
         ed_css.setValue(obj.css   || '', -1);
         ed_js.setValue(obj.js     || '', -1);
+        ed_py.setValue(obj.py     || '', -1);
+        ed_c.setValue(obj.c     || '', -1);
+        ed_cpp.setValue(obj.cpp     || '', -1);
+        ed_java.setValue(obj.java     || '', -1);
         log('Web project loaded.');
     }catch(e){ 
         log('Unable to load project: '+e, 'error'); 
@@ -158,6 +224,10 @@ function setDefaultContent(){
     ed_html.setValue(`<!--Write you code here-->`, -1);
     ed_css.setValue(`/*Write you code here*/`, -1);
     ed_js.setValue(`// Write you code here`, -1);
+    ed_py.setValue(`# Write you code here`, -1);
+    ed_c.setValue(`// Write you code here`, -1);
+    ed_cpp.setValue(`// Write you code here`, -1);
+    ed_java.setValue(`// Write you code here`, -1);
 }
 
 function saveProject(){
@@ -198,7 +268,7 @@ try{
     setDefaultContent(); 
 }
 
-log('Web Editor ready (HTML/CSS/JS)');
+log('Code Editor ready');
 
 function normalizeProject(raw){
     if (!raw || typeof raw !== 'object') throw new Error('Not an object');
@@ -207,13 +277,16 @@ function normalizeProject(raw){
     const html = typeof raw.html === 'string' ? raw.html : (raw.web && raw.web.html) || '';
     const css  = typeof raw.css  === 'string' ? raw.css  : (raw.web && raw.web.css ) || '';
     const js   = typeof raw.js   === 'string' ? raw.js   : (raw.web && raw.web.js  ) || '';
-
+    const py   = typeof raw.py   === 'string' ? raw.py   : (raw.web && raw.web.py  ) || '';
+    const c   = typeof raw.c   === 'string' ? raw.c   : (raw.web && raw.web.c  ) || '';
+    const cpp   = typeof raw.cpp   === 'string' ? raw.cpp  : (raw.web && raw.web.cpp  ) || '';
+    const java   = typeof raw.java   === 'string' ? raw.java   : (raw.web && raw.web.java  ) || '';
     return {
         version: 1,
         kind: 'web-only',
         assignment: typeof raw.assignment === 'string' ? raw.assignment : (raw.task || ''),
         test: typeof raw.test === 'string' ? raw.test: (raw.tests || ''),
-        html, css, js
+        html, css, js, py, c, cpp, java
     };
 }
 
@@ -234,6 +307,10 @@ function loadProject(raw){
     if (typeof ed_html?.setValue === 'function') ed_html.setValue(proj.html, -1);
     if (typeof ed_css?.setValue  === 'function') ed_css.setValue(proj.css, -1);
     if (typeof ed_js?.setValue   === 'function') ed_js.setValue(proj.js, -1);
+    if (typeof ed_py?.setValue   === 'function') ed_py.setValue(proj.py, -1);
+    if (typeof ed_c?.setValue   === 'function') ed_c.setValue(proj.c, -1);
+    if (typeof ed_cpp?.setValue   === 'function') ed_cpp.setValue(proj.cpp, -1);
+    if (typeof ed_java?.setValue   === 'function') ed_java.setValue(proj.java, -1);
     log('Project loaded.');
 }
 
