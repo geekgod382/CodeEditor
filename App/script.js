@@ -227,7 +227,7 @@ function setDefaultContent(){
     ed_py.setValue(`# Write you code here`, -1);
     ed_c.setValue(`// Write you code here`, -1);
     ed_cpp.setValue(`// Write you code here`, -1);
-    ed_java.setValue(`// Write you code here`, -1);
+    ed_java.setValue(`// Write you code here, take file as Main.java`, -1);
 }
 
 function saveProject(){
