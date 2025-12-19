@@ -1,6 +1,6 @@
 ## Code Editor — Live In-Browser (HTML/CSS/JS)
 
-Minimal, self-contained code editor that runs entirely in the browser. Edit HTML, CSS, and JavaScript with Ace Editor, preview instantly, and optionally run inline JS tests. Save and load your work as a JSON file.
+Minimal, self-contained code editor that runs inside the browser and an isolated backend for other languages using Docker. Save and load your work as a JSON file.
 
 ### Features
 - **Three editors**: HTML, CSS, JavaScript (Ace Editor with Dracula theme)
