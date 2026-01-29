@@ -156,6 +156,7 @@ async function runPython() {
         // conflicts with the DOM `out` variable above.
         const wrapped = `import sys, io, traceback\n_buf = io.StringIO()\n_old_out = sys.stdout\n_old_err = sys.stderr\nsys.stdout = _buf\nsys.stderr = _buf\ntry:\n${code.split('\n').map(l => '    ' + l).join('\n')}\nexcept Exception:\n    traceback.print_exc()\nfinally:\n    sys.stdout = _old_out\n    sys.stderr = _old_err\n_buf.getvalue()`;
 
+        log("Running python code...");
         const result = await pyodide.runPythonAsync(wrapped);
         if (result && String(result).trim()) log(String(result));
         else log("Done");
