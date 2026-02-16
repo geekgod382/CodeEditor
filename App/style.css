@@ -104,7 +104,7 @@ h2, h3{
 
 .muted{
     color:var(--muted);
-     font-size:13px
+    font-size:15px
 }
 
 
@@ -169,7 +169,7 @@ h2, h3{
 
 textarea.text{
     width:100%;
-    min-height:120px;
+    min-height:200px;
 }
 
 
@@ -226,7 +226,7 @@ iframe.preview{
     border:1px solid rgba(255,255,255,.12); 
     border-radius:12px; 
     padding:10px; 
-    min-height:400px; 
+    min-height:450px; 
     overflow:auto; 
     white-space:pre-wrap
 }
