@@ -67,14 +67,12 @@
         <aside class="card panel stack">
         <h2>Task</h2>
         <textarea id="assignment" class="text" placeholder="Write the task description here..."></textarea>
-        <div class="stack">
-            <label for="testArea">Validation tests (JavaScript only - optional)</label>
-            <textarea id="testArea" class="text" placeholder="Write your tests here"></textarea>
-        </div>
-        <div class="muted">
-            Tip: <span class="kbd">Ctrl</span> + <span class="kbd">S</span> to save,
-            <span class="kbd">Ctrl</span> + <span class="kbd">Enter</span> to run.
-        </div>
+        <h3>Notes</h3>
+        <ul class="muted" style="margin:0 0 8px 0; padding-inline-start:18px">
+            <li>You can save the work as a JSON file and restore it.</li>
+            <li>Assume file name to be Main.java for writing code in Java.</li>
+            <li>This editor currently does not support standard input</li>
+        </ul>
         </aside>
         
         <!-- Middle: Editors and preview -->
@@ -108,7 +106,7 @@
                 <div class="editor-wrap" data-pane="java" hidden><div id="ed_java" class="editor"></div></div>
 
                 <div class="stack">
-                    <h3>Web Preview</h3>
+                    <h2>Web Preview</h2>
                     <iframe id="preview" class="preview" sandbox="allow-scripts allow-same-origin allow-modals"></iframe>
                 </div>
             </div>
@@ -119,16 +117,9 @@
             <h2>Output</h2>
             <div id="output" class="out" aria-live="polite"></div>
             <div class="row">
-                <button class="btn warn" id="runTests">Run with tests</button>
                 <button class="btn secondary" id="clearOut">Clear log</button>
             </div>
-            <h3>Notes</h3>
-            <ul class="muted" style="margin:0 0 8px 0; padding-inline-start:18px">
-                <li>HTML and JS run inside the browser in a sandbox.</li>
-                <li>Other languages run in an isolated Docker container.</li>
-                <li>You can save the work as a JSON file and restore it.</li>
-                <li>You can assume file name as Main.java for writing code in Java.</li>
-            </ul>
+            
         </aside>
 
     </main>
