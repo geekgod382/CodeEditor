@@ -264,7 +264,7 @@ async function saveProject(){
                         assignment: proj.assignment,
                         test: proj.test
                     });
-                    log('Also saved to cloud!');
+                    // log('Also saved to cloud!');
                 } catch (cloudErr) {
                     log('Cloud save failed: ' + cloudErr.message, 'warn');
                 }
