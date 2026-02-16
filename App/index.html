@@ -13,7 +13,7 @@
 </head>
 
 <body>
-    <header>
+<header>
         <div class="container row">
             <div class="brand">
                 <div class="logo"></div>
@@ -23,9 +23,44 @@
                 <button class="btn secondary" id="saveBtn" title="Save work locally"><span>Save</span></button>
                 <button class="btn secondary" id="loadBtn" title="Load work file"><span>Load</span></button>
                 <input id="openFile" type="file" accept="application/json" hidden>
+                
+                <!-- Auth buttons -->
+                <div id="authBtns" class="row">
+                    <button class="btn" id="loginBtn">Login</button>
+                </div>
+                <!-- User status (shown when logged in) -->
+                <div id="userStatus" class="user-status" style="display:none;">
+                    <span class="user-email" id="userEmail"></span>
+                    <button class="btn secondary small" id="logoutBtn">Logout</button>
+                </div>
             </div>
         </div>
     </header>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal-overlay hidden">
+        <div class="modal">
+            <h2 id="authTitle">Login</h2>
+            <form id="authForm">
+                <div class="input-group">
+                    <label for="authEmail">Email</label>
+                    <input type="email" id="authEmail" placeholder="you@example.com" required>
+                </div>
+                <div class="input-group">
+                    <label for="authPassword">Password</label>
+                    <input type="password" id="authPassword" placeholder="Your password" required minlength="6">
+                </div>
+                <button type="submit" class="btn ok" id="authSubmitBtn">Login</button>
+            </form>
+            <div id="authError" class="error-msg"></div>
+            <div id="authSuccess" class="success-msg"></div>
+            <p class="switch-text">
+                <span id="switchText">Don't have an account?</span>
+                <a id="switchMode">Sign up</a>
+            </p>
+            <button class="btn secondary" id="closeModal" style="margin-top:12px;">Cancel</button>
+        </div>
+    </div>
 
     <main>
         <!-- Left panel: Task description and settings -->
@@ -107,10 +142,10 @@
         onerror="(function(){var s=document.createElement('script'); s.src='https://cdn.jsdelivr.net/npm/ace-builds@1.43.2/src-min/ace.js'; document.head.appendChild(s);}())">
     </script>
     <script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>
-
-    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script src="script.js"></script>
+    <script src="auth.js"></script>
 
     <script>
           window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };

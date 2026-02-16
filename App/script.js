@@ -231,16 +231,45 @@ function setDefaultContent(){
     ed_java.setValue(`// Write you code here, take file as Main.java`, -1);
 }
 
-function saveProject(){
+async function saveProject(){
     try{
-        const data = JSON.stringify(projectJSON(), null, 2);
+        const proj = projectJSON();
+        const data = JSON.stringify(proj, null, 2);
+        
+        // Save to localStorage
         localStorage.setItem(STORAGE_KEY, data);
+        
+        // Download JSON file
         const blob = new Blob([data], {type:'application/json'});
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
         a.download = 'codeweb.json';
         a.click();
         log('Saved locally and downloaded JSON file.');
+        
+        // Save to cloud if logged in
+        if (window.cloudAuth) {
+            const user = await window.cloudAuth.getUser();
+            if (user) {
+                try {
+                    await window.cloudAuth.saveProjectToCloud({
+                        name: 'My Project',
+                        html: proj.html,
+                        css: proj.css,
+                        js: proj.js,
+                        py: proj.py,
+                        c: proj.c,
+                        cpp: proj.cpp,
+                        java: proj.java,
+                        assignment: proj.assignment,
+                        test: proj.test
+                    });
+                    log('Also saved to cloud!');
+                } catch (cloudErr) {
+                    log('Cloud save failed: ' + cloudErr.message, 'warn');
+                }
+            }
+        }
     }catch(e){ 
         log('Unable to save: '+e, 'error'); 
     }
