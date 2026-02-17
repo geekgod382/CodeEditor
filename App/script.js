@@ -93,11 +93,10 @@ $('#webTabs')?.addEventListener('keydown', (e)=>{
 showPane('html');
 
 // ================== Preview ==================
-function buildWebSrcdoc(withTests=false){
+function buildWebSrcdoc(){
     const html  = ed_html.getValue();
     const css   = ed_css.getValue();
     const js    = ed_js.getValue();
-    const tests = ($('#testArea')?.value || '').trim();
 
     return `<!doctype html>
         <html lang="en" dir="ltr">
@@ -112,15 +111,14 @@ function buildWebSrcdoc(withTests=false){
             <script>
             try{
                 ${js}
-                ${withTests && tests ? `\n/* tests */\n${tests}` : ''}
             }catch(e){console.error(e)}<\/script>
         </body>
         </html>`;
 }
 
-function runWeb(withTests=false){
-    preview.srcdoc = buildWebSrcdoc(withTests);
-    log(withTests ? 'Run with tests.' : 'Web preview updated.');
+function runWeb(){
+    preview.srcdoc = buildWebSrcdoc();
+    log('Web preview updated.');
 }
 
 async function runBackend(lang) {
@@ -179,7 +177,6 @@ $('#runWeb')?.addEventListener('click', ()=>{
         runBackend(pane); // c / cpp / java
 });
 
-$('#runTests')?.addEventListener('click', ()=>runWeb(true));
 
 $('#openPreview')?.addEventListener('click', ()=>{
     const src = buildWebSrcdoc(false);
@@ -193,7 +190,6 @@ function projectJSON(){
         version: 1,
         kind: 'web-only',
         assignment: $('#assignment')?.value || '',
-        test: $('#testArea')?.value || '',
         html: ed_html.getValue(),
         css: ed_css.getValue(),
         js: ed_js.getValue(),
@@ -207,7 +203,6 @@ function projectJSON(){
 function loadProject(obj){
     try{
         if($('#assignment')) $('#assignment').value = obj.assignment || '';
-        if($('#testArea'))   $('#testArea').value   = obj.test || '';
         ed_html.setValue(obj.html || '', -1);
         ed_css.setValue(obj.css   || '', -1);
         ed_js.setValue(obj.js     || '', -1);
@@ -262,7 +257,6 @@ async function saveProject(){
                         cpp: proj.cpp,
                         java: proj.java,
                         assignment: proj.assignment,
-                        test: proj.test
                     });
                     // log('Also saved to cloud!');
                 } catch (cloudErr) {
@@ -315,7 +309,6 @@ function normalizeProject(raw){
         version: 1,
         kind: 'web-only',
         assignment: typeof raw.assignment === 'string' ? raw.assignment : (raw.task || ''),
-        test: typeof raw.test === 'string' ? raw.test: (raw.tests || ''),
         html, css, js, py, c, cpp, java
     };
 }
@@ -333,7 +326,6 @@ function safeSetValue(id, val){
 function loadProject(raw){
     const proj = normalizeProject(raw);
     safeSetValue('assignment', proj.assignment);
-    safeSetValue('testArea',   proj.test);
     if (typeof ed_html?.setValue === 'function') ed_html.setValue(proj.html, -1);
     if (typeof ed_css?.setValue  === 'function') ed_css.setValue(proj.css, -1);
     if (typeof ed_js?.setValue   === 'function') ed_js.setValue(proj.js, -1);
