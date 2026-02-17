@@ -82,6 +82,12 @@ async function handleAuth(e) {
         } else {
             const { data, error } = await sb.auth.signUp({ email, password });
             if (error) throw error;
+            
+            // Check if email already exists (identities will be empty)
+            if (data?.user && data.user.identities?.length === 0) {
+                throw new Error('An account with this email already exists. Please login.');
+            }
+            
             authSuccess.textContent = 'Check your email to confirm your account!';
         }
     } catch (err) {
@@ -117,7 +123,10 @@ async function saveProjectToCloud(projectData) {
 
     const { data, error } = await sb
         .from("projects")
-        .upsert({ ...projectData, user_id: user.id, updated_at: new Date() })
+        .upsert(
+            { ...projectData, user_id: user.id, updated_at: new Date().toISOString() },
+            { onConflict: 'user_id,name' }
+        )
         .select();
     if (error) throw error;
     return data;
