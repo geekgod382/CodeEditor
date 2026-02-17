@@ -141,7 +141,7 @@ let pyodide;
 
 async function initPy() {
     pyodide = await loadPyodide();
-    log("Python ready (Pyodide)");
+    // log("Python ready (Pyodide)");
 }
 initPy();
 
@@ -162,10 +162,6 @@ async function runPython() {
         log(e.toString(), 'error');
     }
 }
-
-runBackend("c")
-runBackend("cpp")
-runBackend("java")
 
 $('#runWeb')?.addEventListener('click', ()=>{
     const pane = activePane();
@@ -200,21 +196,20 @@ function projectJSON(){
     };
 }
 
-function loadProject(obj){
-    try{
-        if($('#assignment')) $('#assignment').value = obj.assignment || '';
-        ed_html.setValue(obj.html || '', -1);
-        ed_css.setValue(obj.css   || '', -1);
-        ed_js.setValue(obj.js     || '', -1);
-        ed_py.setValue(obj.py     || '', -1);
-        ed_c.setValue(obj.c     || '', -1);
-        ed_cpp.setValue(obj.cpp     || '', -1);
-        ed_java.setValue(obj.java     || '', -1);
-        log('Web project loaded.');
-    }catch(e){ 
-        log('Unable to load project: '+e, 'error'); 
-    }
+
+function loadProject(raw){
+    const proj = normalizeProject(raw);
+    safeSetValue('assignment', proj.assignment);
+    if (typeof ed_html?.setValue === 'function') ed_html.setValue(proj.html, -1);
+    if (typeof ed_css?.setValue  === 'function') ed_css.setValue(proj.css, -1);
+    if (typeof ed_js?.setValue   === 'function') ed_js.setValue(proj.js, -1);
+    if (typeof ed_py?.setValue   === 'function') ed_py.setValue(proj.py, -1);
+    if (typeof ed_c?.setValue   === 'function') ed_c.setValue(proj.c, -1);
+    if (typeof ed_cpp?.setValue   === 'function') ed_cpp.setValue(proj.cpp, -1);
+    if (typeof ed_java?.setValue   === 'function') ed_java.setValue(proj.java, -1);
+    // log('Project loaded.');
 }
+
 
 function setDefaultContent(){
     ed_html.setValue(`<!--Write you code here-->`, -1);
@@ -321,19 +316,6 @@ function safeSetValue(id, val){
     else { 
         log(`Warning: #${id} not found; skipped setting value`, 'warn'); 
     }
-}
-
-function loadProject(raw){
-    const proj = normalizeProject(raw);
-    safeSetValue('assignment', proj.assignment);
-    if (typeof ed_html?.setValue === 'function') ed_html.setValue(proj.html, -1);
-    if (typeof ed_css?.setValue  === 'function') ed_css.setValue(proj.css, -1);
-    if (typeof ed_js?.setValue   === 'function') ed_js.setValue(proj.js, -1);
-    if (typeof ed_py?.setValue   === 'function') ed_py.setValue(proj.py, -1);
-    if (typeof ed_c?.setValue   === 'function') ed_c.setValue(proj.c, -1);
-    if (typeof ed_cpp?.setValue   === 'function') ed_cpp.setValue(proj.cpp, -1);
-    if (typeof ed_java?.setValue   === 'function') ed_java.setValue(proj.java, -1);
-    log('Project loaded.');
 }
 
 // ===== Initial restore (after DOM is parsed) =====
