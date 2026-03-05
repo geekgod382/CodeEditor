@@ -24,7 +24,7 @@ Minimal, self-contained code editor that runs inside the browser and an isolated
 - Click "Open preview in window" to pop out the rendered page.
 
 ### Save and Load
-- Save: Click "Save" (or press `Ctrl+S`). Your work is saved on the cloud and on `localStorage` and downloaded as `codeweb.json`.
+- Save: Click "Save" to save you work. Your work is saved on the cloud and on `localStorage` and downloaded as `codeweb.json`.
 - Load: Click "Load" and choose a previously saved `.json` file.
 
 ### Tech stack
