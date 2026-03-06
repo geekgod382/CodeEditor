@@ -157,7 +157,7 @@ async function runPython() {
         log("Running python code...");
         const result = await pyodide.runPythonAsync(wrapped);
         if (result && String(result).trim()) log(String(result));
-        else log("Done");
+        // else log("Done");
     } catch (e) {
         log(e.toString(), 'error');
     }
