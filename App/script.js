@@ -133,7 +133,13 @@ async function runBackend(lang) {
     });
 
     const data = await res.json();
-    log(data.output || data.error || "No output");
+    if (data.error) {
+        log(data.error, 'error');
+    } else if (data.output) {
+        log(data.output);
+    } else {
+        log("Program completed with no output");
+    }
 }
 
 
