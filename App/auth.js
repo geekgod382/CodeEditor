@@ -6,7 +6,7 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// ================== DOM Elements ==================
+// DOM Elements
 const authModal = document.getElementById('authModal');
 const authForm = document.getElementById('authForm');
 const authTitle = document.getElementById('authTitle');
@@ -26,7 +26,7 @@ const userEmailEl = document.getElementById('userEmail');
 
 let isLoginMode = true;
 
-// ================== Modal Functions ==================
+// Modal Functions
 function openModal() {
     authModal.classList.remove('hidden');
     authError.textContent = '';
@@ -57,7 +57,7 @@ function toggleMode() {
     authSuccess.textContent = '';
 }
 
-// ================== Auth Functions ==================
+//Auth Functions
 async function getUser() {
     const { data: { user } } = await sb.auth.getUser();
     return user;
@@ -83,7 +83,6 @@ async function handleAuth(e) {
             const { data, error } = await sb.auth.signUp({ email, password });
             if (error) throw error;
             
-            // Check if email already exists (identities will be empty)
             if (data?.user && data.user.identities?.length === 0) {
                 throw new Error('An account with this email already exists. Please login.');
             }
@@ -103,7 +102,7 @@ async function handleLogout() {
     updateUI(null);
 }
 
-// ================== UI State ==================
+//UI State
 function updateUI(user) {
     if (user) {
         authBtns.style.display = 'none';
@@ -116,7 +115,7 @@ function updateUI(user) {
     }
 }
 
-// ================== Project CRUD ==================
+// Project CRUD
 async function saveProjectToCloud(projectData) {
     const user = await getUser();
     if (!user) throw new Error("Not authenticated");
@@ -146,7 +145,7 @@ async function deleteProject(id) {
     if (error) throw error;
 }
 
-// ================== Event Listeners ==================
+//Event Listeners
 loginBtn?.addEventListener('click', openModal);
 closeModal?.addEventListener('click', closeModalFn);
 switchMode?.addEventListener('click', toggleMode);
@@ -163,17 +162,15 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// ================== Auth State Listener ==================
+//Auth State Listener
 sb.auth.onAuthStateChange((event, session) => {
     updateUI(session?.user || null);
 });
 
-// Initial check
 sb.auth.getUser().then(({ data: { user } }) => {
     updateUI(user);
 });
 
-// Expose functions globally for script.js
 window.cloudAuth = {
     getUser,
     saveProjectToCloud,
